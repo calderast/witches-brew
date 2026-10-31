@@ -1,0 +1,8 @@
+Word,Spelled in hex,Length,Type,Spooky
+DEAD,DEAD,4,noun,yes
+CAT,CA7,3,noun,yes
+BOO,B00,3,interj,yes
+ICE,1CE,3,noun,yes
+FACE,FACE,4,noun,no
+BED,BED,3,noun,no
+COFFEE,C0FFEE,6,noun,no

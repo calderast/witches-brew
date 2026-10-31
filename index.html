@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Witch's Brew at 1000 Oak</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>" />
+  </head>
+  <body>
+    <div class="scene" aria-hidden="true"></div>
+    <header class="topbar">
+      <nav>
+        <a href="#welcome" data-tab="welcome">Welcome</a>
+        <a href="#points" data-tab="points">Points guide</a>
+        <a href="#compare" data-tab="compare">Test your brew</a>
+        <a href="#color" data-tab="color">Color</a>
+        <a href="#camera" data-tab="camera">Camera</a>
+        <a href="#leaderboard" data-tab="leaderboard">Leaderboard</a>
+        <a href="#rules" data-tab="rules">Rules</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="welcome" class="screen">
+        <h1>Enter your <span class="hexes-word" aria-label="hexes">HEXES</span> to reveal your <span class="sparkle">potion</span></h1>
+        <form class="code-form" data-form="welcome">
+          <input class="code-input carry" name="code" autocomplete="off" spellcheck="false" placeholder="A3 7F E2" aria-label="Your 6-character code" />
+          <div class="brew-actions">
+            <button type="submit" class="sparkly">Brew</button>
+          </div>
+        </form>
+        <p class="hint">Type your red card, then green, then blue. Enter to brew, Esc to start over.</p>
+        <p class="error" data-error="welcome" role="alert"></p>
+        <div data-result="welcome"></div>
+      </section>
+
+      <section id="points" class="screen">
+        <h1><span class="sparkle">Points guide</span></h1>
+        <form class="code-form" data-form="points">
+          <input class="code-input carry" name="code" autocomplete="off" spellcheck="false" placeholder="A3 7F E2" aria-label="Code to score" />
+          <button type="submit">Score</button>
+        </form>
+        <p class="error" data-error="points" role="alert"></p>
+        <div data-result="points"></div>
+      </section>
+
+      <section id="compare" class="screen">
+        <h1><span class="sparkle">Test your brew</span></h1>
+        <form class="compare-form" data-form="compare">
+          <label>Nickname
+            <input class="name-input" name="nickname" autocomplete="off" spellcheck="false" placeholder="steph &lt;3" />
+          </label>
+          <label>Target code
+            <input class="code-input carry" name="targetCode" autocomplete="off" spellcheck="false" placeholder="A3 7F E2" />
+          </label>
+          <label>Hex read from the photo
+            <input class="code-input" name="actual" autocomplete="off" spellcheck="false" placeholder="9C 82 D6" />
+          </label>
+          <button type="submit">Test</button>
+        </form>
+        <p class="error" data-error="compare" role="alert"></p>
+        <div data-result="compare"></div>
+      </section>
+
+      <section id="color" class="screen">
+        <h1><span class="sparkle">Color reference</span></h1>
+        <form class="code-form" data-form="color">
+          <input class="code-input carry" name="code" autocomplete="off" spellcheck="false" placeholder="A3 7F E2" aria-label="Code to show" />
+          <button type="submit">Show</button>
+        </form>
+        <p class="error" data-error="color" role="alert"></p>
+        <div data-result="color"></div>
+      </section>
+
+      <section id="camera" class="screen">
+        <h1><span class="sparkle">Read a color</span></h1>
+        <div data-camera></div>
+      </section>
+
+      <section id="leaderboard" class="screen">
+        <div class="board-head">
+          <h1><span class="sparkle">Leaderboard</span></h1>
+          <button type="button" class="ghost" data-action="clear-board">Clear leaderboard</button>
+        </div>
+        <p class="hint">Ranked by each player's best guess (lowest ΔE). Saved in this browser.</p>
+        <div data-result="leaderboard"></div>
+      </section>
+
+      <section id="rules" class="screen">
+        <h1><span class="sparkle">What codes are worth</span></h1>
+        <p class="hint">Every code is three cards. Rules can stack, so one code can score several of these.</p>
+        <div data-result="rules"></div>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

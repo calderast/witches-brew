@@ -1,0 +1,673 @@
+/* Witch's Brew at 1000 Oak: a foggy Lower Haight night, Nerds Gummy Clusters candy, and Y2K holographic chrome.
+   Layout: one centered column over a fixed skyline of the building, which sits behind everything. */
+@import "@fontsource/bagel-fat-one/400.css";
+@import "@fontsource/atkinson-hyperlegible/400.css";
+@import "@fontsource/atkinson-hyperlegible/700.css";
+@import "@fontsource/atkinson-hyperlegible/400-italic.css";
+@import "@fontsource/space-mono/400.css";
+@import "@fontsource/space-mono/700.css";
+@import "@fontsource/sour-gummy/500.css";
+
+:root {
+  --bg: #0e0820;
+  --sky: #1d1040;
+  --panel: rgba(32, 18, 66, 0.72);
+  --line: rgba(195, 175, 235, 0.2);
+  --text: #fbf4ff;
+  --muted: #c4b4e2;
+  --pink: #ff4fa3;
+  --grape: #9b5cff;
+  --blue: #35c8ff;
+  --lemon: #ffe24a;
+  --slime: #7dff6b;
+  --accent: var(--lemon);
+  --accent-2: var(--grape);
+  --easy: #7dff9b;
+  --medium: #ffe24a;
+  --hard: #ff9a3d;
+  --brutal: #ff4f7b;
+  --display: "Bagel Fat One", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+  --body: "Atkinson Hyperlegible", system-ui, -apple-system, sans-serif;
+  --mono: "Space Mono", ui-monospace, Menlo, monospace;
+  /* Soft gummy-candy lettering for potion descriptions and whispers */
+  --cute: "Sour Gummy", "Atkinson Hyperlegible", system-ui, sans-serif;
+  --card-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* Y2K holographic chrome, for headings */
+  --holo: linear-gradient(100deg, #ffd6f5 0%, #c9b8ff 22%, #9ef0ff 42%, #ffffff 52%, #ffb8e0 70%, #b8a4ff 88%, #9ef0ff 100%);
+  /* Nerds Gummy Clusters: candy-coated sprinkles over a gummy center */
+  --nerds:
+    radial-gradient(circle at 18% 30%, #ff4fa3 0 2.4px, transparent 3px),
+    radial-gradient(circle at 72% 62%, #ffe24a 0 2.4px, transparent 3px),
+    radial-gradient(circle at 44% 84%, #35c8ff 0 2.2px, transparent 2.8px),
+    radial-gradient(circle at 86% 14%, #9b5cff 0 2.4px, transparent 3px),
+    radial-gradient(circle at 30% 60%, #7dff6b 0 2px, transparent 2.6px);
+  --nerds-size: 23px 19px, 29px 25px, 21px 27px, 31px 23px, 26px 29px;
+  /* Magic wand cursor; the star at its tip is the click point */
+  --wand: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M10 10 L29 29' stroke='%232a1b45' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M10 10 L29 29' stroke='%239b5cff' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M23 23 L29 29' stroke='%23ffffff' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M6 0 L7.6 4.4 L12 6 L7.6 7.6 L6 12 L4.4 7.6 L0 6 L4.4 4.4 Z' fill='%23ffe24a' stroke='%232a1b45' stroke-width='1'/%3E%3C/svg%3E") 6 6, auto;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, a, button, label, nav a, .cell { cursor: var(--wand); }
+input, .hex-card { cursor: text; }
+.wand-spark { position: fixed; z-index: 100; pointer-events: none; line-height: 1; text-shadow: 0 0 6px currentColor; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 86% 9%, rgba(255, 246, 214, 0.9) 0 34px, rgba(255, 236, 190, 0.18) 35px, transparent 120px) fixed,
+    radial-gradient(ellipse at 20% 0%, #3a1d6e 0%, transparent 55%) fixed,
+    linear-gradient(to bottom, var(--sky) 0%, var(--bg) 70%) fixed,
+    var(--bg);
+  color: var(--text);
+  font: 18px/1.5 var(--body);
+  min-height: 100vh;
+}
+
+/* Backdrop: stars, fog and the 1000 Oak skyline, fixed behind the app */
+.scene { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.scene .stars {
+  position: absolute; inset: 0 0 40% 0; opacity: 0.7;
+  background:
+    radial-gradient(1.5px 1.5px at 12% 18%, #fff, transparent), radial-gradient(1px 1px at 28% 8%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 47% 22%, #ffe9fb, transparent), radial-gradient(1px 1px at 63% 12%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 74% 30%, #e6f9ff, transparent), radial-gradient(1px 1px at 92% 24%, #fff, transparent),
+    radial-gradient(1px 1px at 6% 40%, #fff, transparent), radial-gradient(1.5px 1.5px at 38% 36%, #fff, transparent);
+  animation: twinkle-sky 7s ease-in-out infinite alternate;
+}
+@keyframes twinkle-sky { from { opacity: 0.45; } to { opacity: 0.85; } }
+.scene .skyline { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: min(31vh, 270px); opacity: 0.8; }
+.scene .twinkle { animation: flicker 6s steps(1) infinite; }
+@keyframes flicker { 0%, 100% { opacity: 0.6; } 46% { opacity: 0.6; } 48% { opacity: 0.15; } 52% { opacity: 0.6; } 80% { opacity: 0.25; } 84% { opacity: 0.6; } }
+.scene .ghost { animation: haunt 5s ease-in-out infinite; }
+@keyframes haunt { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-6px, -8px); } }
+.scene .fog {
+  position: absolute; left: -30%; width: 160%; height: 40vh; bottom: 0; filter: blur(18px);
+  background: radial-gradient(ellipse 30% 40% at 20% 70%, rgba(220, 210, 255, 0.13), transparent 70%),
+    radial-gradient(ellipse 25% 35% at 60% 60%, rgba(220, 210, 255, 0.1), transparent 70%),
+    radial-gradient(ellipse 35% 45% at 90% 75%, rgba(220, 210, 255, 0.12), transparent 70%);
+  animation: drift 70s linear infinite alternate;
+}
+.scene .fog-2 { bottom: -8vh; opacity: 0.8; animation-duration: 45s; animation-direction: alternate-reverse; }
+@keyframes drift { from { transform: translateX(-8%); } to { transform: translateX(10%); } }
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 14px 24px;
+  background: rgba(14, 8, 32, 0.7);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+@media (max-width: 520px) { .topbar { padding: 10px 12px; } nav a { padding: 6px 12px; } }
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1.5px solid transparent;
+}
+nav a:hover { color: var(--text); border-color: var(--line); }
+nav a { text-transform: lowercase; }
+nav a.active {
+  color: #2a0a2a;
+  background: var(--nerds), linear-gradient(160deg, #ffb3dc, #ff6fb5 55%, #e9449a);
+  background-size: var(--nerds-size), auto;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.55), inset 0 -3px 0 rgba(120, 10, 70, 0.35), 0 0 18px rgba(255, 79, 163, 0.45);
+}
+
+/* Keeps text readable where it crosses the lit skyline */
+main :is(p, li, td, th, label, figcaption, .de-big, .code-big) { text-shadow: 0 1px 8px rgba(14, 8, 32, 0.95), 0 0 2px rgba(14, 8, 32, 0.9); }
+main { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 36px 24px 220px; }
+.screen { display: none; scroll-margin-top: 120px; }
+.screen.active { display: block; }
+
+h1 {
+  font: 400 44px/1.1 var(--display); margin: 0 0 22px; letter-spacing: 0.01em; text-wrap: balance;
+  background: var(--holo); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 2px 0 rgba(80, 30, 140, 0.9)) drop-shadow(0 0 22px rgba(155, 92, 255, 0.45));
+}
+h2 { font: 400 24px var(--display); margin: 24px 0 8px; color: var(--lemon); letter-spacing: 0.01em; }
+
+.code-form, .compare-form { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; }
+.compare-form label { display: flex; flex-direction: column; gap: 6px; color: var(--muted); font-size: 15px; font-weight: 700; }
+
+.code-input {
+  font: 700 32px var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  width: 11ch;
+  padding: 10px 16px;
+  border-radius: 14px;
+  border: 2px solid var(--line);
+  background: rgba(14, 8, 32, 0.75);
+  color: var(--text);
+}
+.code-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 4px rgba(53, 200, 255, 0.25), 0 0 24px rgba(53, 200, 255, 0.3); }
+/* Red, green and blue code cards, styled like the printed ones */
+.card-entry { display: flex; gap: 14px; }
+.hex-card {
+  position: relative; display: block; width: 132px; height: 146px; border-radius: 10px; overflow: hidden;
+  background: #fff; border: 1px solid #d6d2da; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35); cursor: text;
+}
+.hex-card input {
+  width: 100%; height: 110px; border: 0; background: transparent; text-align: center; color: #111;
+  font: 700 52px var(--card-mono); text-transform: uppercase; caret-color: #111;
+}
+.hex-card input::placeholder { color: #d9d4dd; }
+.hex-card input:focus { outline: none; }
+.hex-card:focus-within { outline: 4px solid var(--blue); outline-offset: 3px; box-shadow: 0 0 28px rgba(53, 200, 255, 0.55); }
+.hex-card .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 36px; }
+.hex-card-red .bar { background: #c62f2a; }
+.hex-card-green .bar { background: #2f9a4a; }
+.hex-card-blue .bar { background: #2a63c6; }
+@media (max-width: 520px) { .hex-card { width: 92px; height: 108px; } .hex-card input { height: 78px; font-size: 36px; } .hex-card .bar { height: 28px; } .hex-card .face { height: 78px; font-size: 36px; } }
+/* Main buttons are gummy candy clusters */
+button {
+  font: 400 22px var(--display);
+  letter-spacing: 0.02em;
+  padding: 14px 28px;
+  border-radius: 22px 18px 24px 16px;
+  border: 0;
+  color: #3a1500;
+  background: var(--nerds), linear-gradient(165deg, #fff1a1, #ffd23f 50%, #f5a623);
+  background-size: var(--nerds-size), auto;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.6), inset 0 -4px 0 rgba(150, 70, 0, 0.35), 0 6px 0 #a25c00, 0 10px 24px rgba(255, 210, 63, 0.35);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  cursor: var(--wand);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+button:hover { transform: translateY(-2px) rotate(-1deg); }
+button:active { transform: translateY(4px); box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.6), inset 0 -4px 0 rgba(150, 70, 0, 0.35), 0 2px 0 #a25c00; }
+button:focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
+button.ghost {
+  font: 700 17px var(--body); padding: 10px 20px; border-radius: 999px; color: var(--text); text-shadow: none;
+  background: rgba(14, 8, 32, 0.6); border: 2px solid var(--line); box-shadow: none;
+}
+button.ghost:hover { border-color: var(--pink); transform: none; box-shadow: 0 0 16px rgba(255, 79, 163, 0.35); }
+.name-input {
+  font: 700 24px var(--body);
+  width: 12ch;
+  padding: 15px 16px;
+  border-radius: 14px;
+  border: 2px solid var(--line);
+  background: rgba(14, 8, 32, 0.75);
+  color: var(--text);
+}
+.name-input { text-transform: lowercase; }
+.name-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 4px rgba(53, 200, 255, 0.25); }
+
+.hint { color: var(--muted); margin: 10px 0 0; font-size: 15px; }
+.error { color: var(--brutal); font-weight: 600; min-height: 1.5em; margin: 8px 0; }
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+.warn { background: rgba(242, 201, 76, 0.12); border: 1px solid rgba(242, 201, 76, 0.4); color: var(--medium); padding: 10px 14px; border-radius: 10px; }
+code { font-family: var(--mono); }
+
+.result { margin-top: 28px; }
+
+.swatch { border-radius: 14px; border: 3px solid rgba(255, 255, 255, 0.15); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
+.swatch-small { width: 56px; height: 56px; border-radius: 10px; }
+.swatch-mini { width: 36px; height: 36px; border-radius: 8px; box-shadow: none; }
+
+#welcome h1, #welcome .hint, #welcome .error { text-align: center; }
+#welcome .code-form { flex-direction: column; align-items: center; gap: 22px; }
+/* With a potion brewing or brewed, Welcome is just the three cards and the result */
+#welcome.has-potion .brew-actions, #welcome.has-potion .hint { display: none; }
+/* The typing hint sits small and faint at the foot of the screen */
+#welcome .hint { position: fixed; left: 0; right: 0; bottom: 10px; z-index: 2; margin: 0; font-size: 12px; opacity: 0.6; }
+
+/* The Brew button sparkles: a glint sweeps across it and two stars twinkle at its corners */
+button.sparkly {
+  position: relative;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.85) 48%, transparent 60%), var(--nerds),
+    linear-gradient(165deg, #fff1a1, #ffd23f 50%, #f5a623);
+  background-size: 300% 100%, var(--nerds-size), auto;
+  animation: glint 3s ease-in-out infinite;
+}
+button.sparkly::before, button.sparkly::after {
+  position: absolute; color: #fff7c2; text-shadow: 0 0 10px #ffe24a; pointer-events: none;
+  animation: twinkle-star 1.6s ease-in-out infinite;
+}
+button.sparkly::before { content: "✦"; font-size: 18px; left: -12px; top: -12px; }
+button.sparkly::after { content: "✧"; font-size: 15px; right: -10px; bottom: -6px; animation-delay: 0.8s; }
+@keyframes glint {
+  0%, 55% { background-position: 150% 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
+  100% { background-position: -150% 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
+}
+.brew-actions { display: flex; gap: 14px; align-items: center; }
+/* "HEXES" in the title, printed like one of the cards */
+.hexes-word {
+  display: inline-block; padding: 0.02em 0.22em 0.2em; margin: 0 0.06em; border-radius: 0.14em; transform: rotate(-4deg);
+  font: 700 0.9em var(--card-mono); letter-spacing: 0.02em; color: #111; -webkit-text-fill-color: #111;
+  background: linear-gradient(90deg, #c62f2a 0 33.3%, #2f9a4a 0 66.6%, #2a63c6 0) bottom / 100% 0.2em no-repeat, #fff;
+  -webkit-background-clip: border-box; background-clip: border-box;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+}
+
+/* The street scene is strongest on the unbrewed Welcome screen and fades back once a potion is brewing */
+.scene { transition: opacity 1.6s ease; }
+body[data-scene="dim"] .scene .skyline, body[data-scene="dim"] .scene .fog { opacity: 0.16; transition: opacity 1.6s ease; }
+body[data-scene="full"] .scene .skyline { opacity: 0.8; transition: opacity 1.2s ease; }
+body[data-scene="off"] .scene .skyline, body[data-scene="off"] .scene .fog { opacity: 0; transition: opacity 0.6s ease; }
+
+/* The bubble lettering is always lowercase; the HEXES card keeps its printed capitals */
+h1, h2, button:not(.ghost), .potion-name, .tier-name, .judge, .total, .board .rank, .pair figcaption > span { text-transform: lowercase; }
+.hexes-word, .caps { text-transform: none; }
+
+/* "potion" in the Welcome title shimmers, with two twinkling stars */
+.sparkle {
+  position: relative; display: inline-block;
+  background: linear-gradient(100deg, #ffd6f5 0%, #ffffff 18%, #ffe24a 30%, #ff9ef0 44%, #9ef0ff 60%, #ffffff 74%, #c9b8ff 88%, #ffd6f5 100%);
+  background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shimmer 3.2s linear infinite;
+}
+.sparkle::before, .sparkle::after {
+  position: absolute; color: #fff7c2; -webkit-text-fill-color: #fff7c2; text-shadow: 0 0 10px #ffe24a;
+  animation: twinkle-star 1.8s ease-in-out infinite;
+}
+.sparkle::before { content: "✦"; font-size: 0.45em; left: -0.35em; top: -0.25em; }
+.sparkle::after { content: "✧"; font-size: 0.4em; right: -0.4em; top: 0.1em; animation-delay: 0.9s; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+@keyframes twinkle-star {
+  0%, 100% { opacity: 0.2; transform: scale(0.5) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.15) rotate(25deg); }
+}
+
+/* Camera: the live picture with its sampling ring, and the reading beside it */
+.cam-layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr); gap: 28px; align-items: start; }
+.cam-view { position: relative; border-radius: 18px; overflow: hidden; background: #000; border: 2px solid var(--line); cursor: crosshair; min-height: 200px; }
+.cam-view video { display: block; width: 100%; height: auto; }
+.cam-view.frozen { border-color: var(--blue); }
+.cam-ring {
+  position: absolute; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none;
+  border: 3px solid #fff; box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.6), 0 0 18px rgba(255, 255, 255, 0.6);
+}
+.cam-message { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; padding: 24px; text-align: center; font: 500 20px var(--cute); color: var(--muted); }
+.cam-message:empty { display: none; }
+.cam-panel { display: grid; gap: 12px; }
+.cam-swatch { aspect-ratio: 1 / 1; width: 100%; max-width: 260px; border-radius: 18px; border: 14px solid #fff; background: #000; }
+.cam-hex { font-size: 40px; }
+.cam-size, .cam-device { display: grid; gap: 4px; font-size: 15px; font-weight: 700; color: var(--muted); }
+.cam-size input { accent-color: var(--pink); }
+.cam-device select { font: 600 15px var(--body); padding: 8px 10px; border-radius: 10px; background: rgba(14, 8, 32, 0.75); color: var(--text); border: 2px solid var(--line); }
+.cam-buttons { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.cam-buttons button:not(.ghost) { font-size: 19px; padding: 12px 22px; }
+@media (max-width: 760px) { .cam-layout { grid-template-columns: 1fr; } }
+
+/* Color reference: the potion and how hard it is to mix, then the swatch as large as it fits, framed in white and in black */
+.color-info { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 32px; margin: 0 0 18px; }
+.color-info .potion-line { margin: 0; }
+.color-difficulty { max-width: 420px; }
+.color-difficulty .tier { margin-top: 0; }
+.color-difficulty p { margin: 6px 0 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.recipe { color: var(--text); }
+.color-ref { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 8px; }
+.ref-swatch { aspect-ratio: 1 / 1; width: min(100%, 64vh); border-radius: 18px; justify-self: center; }
+.ref-white { border: 20px solid #fff; }
+.ref-black { border: 20px solid #000; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); }
+@media (max-width: 760px) { .color-ref { grid-template-columns: 1fr; } }
+
+/* Brewing reveal */
+.cauldron .potion { transition: fill 0.9s ease; }
+.welcome-result.empty, .welcome-result.brewing { grid-template-columns: minmax(200px, 270px); justify-content: center; }
+#welcome .result { margin-top: 0; }
+#welcome h1 { margin-bottom: 30px; }
+#welcome .error { margin: 4px 0; }
+.welcome-result.brewing .details { display: none; }
+.welcome-result.brewed .details { animation: details-in 0.8s 0.35s ease both; }
+@keyframes details-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.welcome-result.brewed .cauldron { animation: brewed-glow 1.4s ease-out; }
+@keyframes brewed-glow {
+  0% { filter: drop-shadow(0 0 0 rgba(255, 240, 200, 0)); }
+  30% { filter: drop-shadow(0 0 40px rgba(255, 240, 200, 0.55)); }
+  100% { filter: drop-shadow(0 0 0 rgba(255, 240, 200, 0)); }
+}
+
+/* Compare: the score waits until the brew has finished mixing and showing how it behaves */
+.compare-result.judging > .verdict, .compare-result.judging > .reveal-bar { visibility: hidden; }
+.compare-result.judged > .verdict { animation: details-in 0.7s ease both; }
+.compare-result.judged > .reveal-bar { animation: details-in 0.7s 0.25s ease both; }
+.hex-card.flying { position: fixed; z-index: 50; margin: 0; pointer-events: none; }
+.hex-card .face { height: 110px; display: grid; place-items: center; color: #111; font: 700 52px var(--card-mono); }
+
+.welcome-result { display: grid; grid-template-columns: minmax(200px, 360px) 1fr; gap: 40px; align-items: center; }
+
+.cauldron { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* Stages of a brew, set on the cauldron while it mixes: drips and bubbles held back, stirring, dripping */
+.cauldron .drip { transform-box: fill-box; transform-origin: top; transition: transform 1.4s cubic-bezier(0.55, 0, 0.85, 0.6); }
+.cauldron.hide-drips .drip { transform: scaleY(0); }
+.cauldron .bubbles { transition: opacity 0.8s ease; }
+.cauldron.hide-bubbles .bubbles { opacity: 0; }
+.cauldron .swirl { opacity: 0; transition: opacity 0.6s ease; }
+.cauldron.stirring .swirl { opacity: 0.4; }
+.cauldron .drop { opacity: 0; transform-box: fill-box; }
+.cauldron.dripping .drop { animation: drop-fall 1.8s ease-in infinite; }
+@keyframes drop-fall {
+  0% { transform: translateY(0) scale(0.4); opacity: 0; }
+  15% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(66px) scale(0.8); opacity: 0; }
+}
+.cauldron:not(.cauldron-spill) .spill, .cauldron:not(.cauldron-spill) .puddle { display: none; }
+
+/* Secret C0FFEE brew: coffee-cup steam, which waits until the potion has finished brewing */
+.steam path {
+  fill: none; stroke: #fff; stroke-width: 5; stroke-linecap: round; opacity: 0;
+  transform-box: fill-box; transform-origin: bottom; filter: blur(1.5px);
+  animation: steam-rise 2.4s ease-out infinite;
+}
+.welcome-result.brewing .steam { display: none; }
+@keyframes steam-rise {
+  0% { transform: translateY(8px) scaleX(0.6); opacity: 0; }
+  30% { opacity: 0.55; }
+  100% { transform: translateY(-34px) scaleX(1.3); opacity: 0; }
+}
+
+/* A Miss floods the screen: streams pour from the cauldron, the potion rises with a sloshing wave, skulls and
+   bubbles float up through it, "miss" slams in, and it drains away. Click to skip ahead. */
+.flood { position: fixed; inset: 0; z-index: 60; cursor: var(--wand); overflow: hidden; }
+.flood .pour { position: absolute; overflow: visible; fill: var(--potion); animation: pour 0.6s cubic-bezier(0.5, 0, 0.9, 0.6) both; }
+.flood .pour path { transform-box: fill-box; transform-origin: top; animation: pour-wobble 0.9s ease-in-out infinite alternate; }
+@keyframes pour-wobble { from { transform: skewX(-2deg) scaleX(0.94); } to { transform: skewX(2deg) scaleX(1.06); } }
+@keyframes pour { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+.flood-liquid {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 0;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.35)), var(--potion);
+}
+.flood .wave { position: absolute; left: 0; bottom: calc(100% - 1px); width: 200%; height: 60px; fill: var(--potion); animation: slosh-wave 1.2s linear infinite; }
+@keyframes slosh-wave { from { transform: translateX(0); } to { transform: translateX(-25%); } }
+.flood-bubble, .flood-skull { position: absolute; bottom: -40px; animation: float-up 2.6s ease-in infinite; }
+.flood-bubble { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.55); background: rgba(255, 255, 255, 0.12); }
+.flood-skull::before { content: "☠"; font-size: 44px; color: rgba(230, 255, 225, 0.9); text-shadow: 0 0 12px #7dff6b; }
+@keyframes float-up { from { transform: translateY(0) rotate(0deg); } to { transform: translateY(-110vh) rotate(25deg); } }
+.flood-word {
+  position: absolute; left: 50%; top: 50%; opacity: 0; font: 400 min(26vw, 260px)/1 var(--display); text-transform: lowercase;
+  color: #fff; -webkit-text-stroke: 4px rgba(20, 8, 30, 0.75); text-shadow: 0 10px 0 rgba(20, 8, 30, 0.45), 0 0 60px rgba(255, 79, 123, 0.7);
+}
+
+/* Test your brew: the target grows and glows first while your cauldron waits, dimmed */
+.compare-result .pair figure { transition: transform 0.7s cubic-bezier(0.3, 1.3, 0.5, 1), opacity 0.6s ease, filter 0.7s ease; }
+.compare-result.spotlight .pair figure:first-child {
+  transform: scale(1.22) translateY(-8px); filter: drop-shadow(0 0 34px rgba(255, 240, 210, 0.55));
+}
+.compare-result.spotlight .pair figure:first-child figcaption > span { text-shadow: 0 0 26px rgba(255, 79, 163, 0.9); }
+.compare-result.spotlight .pair figure:last-child { opacity: 0.35; }
+/* Then your brew's name pops in a word at a time; words that differ from the target's name are yellow */
+.pair figcaption > span .w { display: inline-block; }
+.pair figcaption > span .w.new { color: var(--lemon); text-shadow: 0 0 16px rgba(255, 226, 74, 0.5); }
+.compare-result.judging:not(.name-in) .pair figure:last-child figcaption > :is(span, em) { visibility: hidden; }
+.compare-result.name-in.judging .pair figure:last-child figcaption > span .w { animation: word-in 0.55s calc(var(--i) * 0.22s) cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+.compare-result.name-in.judging .pair figure:last-child figcaption > em { animation: details-in 0.7s 0.6s ease both; }
+@keyframes word-in { from { opacity: 0; transform: translateY(14px) scale(0.6) rotate(-6deg); } to { opacity: 1; transform: none; } }
+
+/* A good brew's full-screen moment: confetti, hearts and sparkles burst from the cauldron, and the result word bounces in */
+.celebrate { position: fixed; inset: 0; z-index: 60; overflow: hidden; cursor: var(--wand); }
+.celebrate-glow {
+  position: absolute; inset: 0; animation: glow-flash 2.6s ease-out both;
+  background: radial-gradient(circle at var(--x) var(--y), rgba(255, 214, 245, 0.55), rgba(155, 92, 255, 0.25) 30%, transparent 65%);
+}
+.celebrate-close .celebrate-glow { background: radial-gradient(circle at var(--x) var(--y), rgba(255, 242, 170, 0.45), transparent 55%); }
+@keyframes glow-flash { 0% { opacity: 0; } 15% { opacity: 1; } 100% { opacity: 0.35; } }
+.celebrate .bit { position: absolute; pointer-events: none; line-height: 1; }
+.celebrate .bit-candy { width: 11px; height: 11px; border-radius: 4px; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.55); }
+.celebrate .bit-candy:nth-child(3n) { width: 9px; height: 14px; border-radius: 5px; }
+.celebrate .bit-heart { font-size: 30px; text-shadow: 0 0 12px currentColor; }
+.celebrate .bit-spark { font-size: 22px; text-shadow: 0 0 10px currentColor; }
+.celebrate-word {
+  position: absolute; left: 50%; top: 42%; opacity: 0; white-space: nowrap; text-transform: lowercase;
+  font: 400 min(17vw, 190px)/1 var(--display);
+  filter: drop-shadow(0 6px 0 rgba(80, 30, 140, 0.85)) drop-shadow(0 0 40px rgba(255, 79, 163, 0.6));
+}
+.celebrate-perfect .celebrate-word {
+  background: linear-gradient(100deg, #ffd6f5 0%, #ffffff 18%, #ffe24a 30%, #ff9ef0 44%, #9ef0ff 60%, #ffffff 74%, #c9b8ff 88%, #ffd6f5 100%);
+  background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shimmer 2s linear infinite;
+}
+.celebrate-maybe .celebrate-glow { background: radial-gradient(circle at var(--x) var(--y), rgba(255, 154, 61, 0.3), rgba(155, 92, 255, 0.2) 35%, transparent 60%); }
+.celebrate-maybe .celebrate-word {
+  font-size: min(9vw, 112px); color: var(--hard);
+  filter: drop-shadow(0 5px 0 rgba(90, 30, 10, 0.8)) drop-shadow(0 0 30px rgba(255, 154, 61, 0.55));
+}
+.celebrate-maybe .celebrate-word[data-beat="1"] { color: var(--pink); filter: drop-shadow(0 5px 0 rgba(90, 10, 50, 0.8)) drop-shadow(0 0 30px rgba(255, 79, 163, 0.55)); }
+.celebrate-maybe .celebrate-word[data-beat="4"] { font-size: min(15vw, 180px); }
+.celebrate-maybe .celebrate-word[data-beat="2"] { color: #d8ffd0; filter: drop-shadow(0 5px 0 rgba(10, 50, 20, 0.8)) drop-shadow(0 0 30px rgba(125, 255, 107, 0.55)); }
+/* Shy pointing fingers, tapping together */
+.fingers { display: inline-flex; margin-left: 0.15em; font-size: 0.8em; vertical-align: 0.05em; filter: none; }
+.fingers span + span { margin-left: -0.28em; }
+.fingers span { display: inline-block; animation: tap-right 0.5s ease-in-out infinite alternate; }
+.fingers span + span { animation-name: tap-left; }
+@keyframes tap-right { from { transform: translateX(-0.08em); } to { transform: translateX(0.06em); } }
+@keyframes tap-left { from { transform: translateX(0.08em); } to { transform: translateX(-0.06em); } }
+.celebrate .bit-skull { font-size: 34px; color: #d8ffd0; text-shadow: 0 0 12px #7dff6b; }
+.celebrate-maybe .bit-heart { color: var(--pink); }
+/* The undecided cauldron rocks back and forth */
+.cauldron.teetering { animation: teeter 0.65s ease-in-out infinite alternate; transform-origin: 50% 90%; }
+@keyframes teeter { from { transform: rotate(-7deg); } to { transform: rotate(7deg); } }
+.celebrate-close .celebrate-word { font-size: min(12vw, 140px); color: var(--lemon); filter: drop-shadow(0 5px 0 rgba(120, 60, 0, 0.8)) drop-shadow(0 0 30px rgba(255, 226, 74, 0.6)); }
+
+/* A good brew celebrates: twinkling sparkles, and for Spot On, hearts of smoke drifting up */
+.celebration .spark {
+  fill: #fff7c2; transform-box: fill-box; transform-origin: center; opacity: 0;
+  filter: drop-shadow(0 0 4px #ffe24a); animation: twinkle-star 1.8s ease-in-out infinite;
+}
+.heart-smoke {
+  fill: #ffd1ec; transform-box: fill-box; transform-origin: center; opacity: 0;
+  filter: blur(1.2px) drop-shadow(0 0 6px #ff4fa3); animation: heart-rise 3.2s ease-out infinite;
+}
+.skull-smoke {
+  fill: #d8ffd0; transform-box: fill-box; transform-origin: center; opacity: 0;
+  filter: blur(0.6px) drop-shadow(0 0 6px #7dff6b); animation: skull-rise 3.3s ease-out infinite;
+}
+.skull-smoke .hole { fill: #1a2a1a; stroke: #1a2a1a; }
+@keyframes skull-rise {
+  0% { transform: translate(0, 12px) scale(0.3) rotate(0deg); opacity: 0; }
+  20% { opacity: 0.9; }
+  50% { transform: translate(-6px, -30px) scale(1) rotate(-8deg); }
+  100% { transform: translate(6px, -78px) scale(1.4) rotate(8deg); opacity: 0; }
+}
+@keyframes heart-rise {
+  0% { transform: translateY(10px) scale(0.3); opacity: 0; }
+  20% { opacity: 0.9; }
+  100% { transform: translateY(-80px) scale(1.9); opacity: 0; }
+}
+.cauldron-hero { max-width: 360px; margin: 0 auto; }
+.cauldron-mid { max-width: 260px; margin: 0 auto; }
+/* Bubbles rise out of the potion surface. Calm for the target and good brews; brews far off sputter or spill. */
+.cauldron .bubbles circle {
+  stroke: rgba(255, 255, 255, 0.35); stroke-width: 1.5; opacity: 0;
+  transform-box: fill-box; transform-origin: center; animation: rise 2.8s ease-in infinite;
+}
+.cauldron .bubbles circle:nth-child(2) { animation-delay: 0.9s; }
+.cauldron .bubbles circle:nth-child(3) { animation-delay: 1.8s; }
+.cauldron .bubbles circle:nth-child(4) { animation-delay: 0.45s; }
+.cauldron .bubbles circle:nth-child(5) { animation-delay: 1.3s; }
+@keyframes rise {
+  0% { transform: translateY(0) scale(0.3); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(-64px) scale(1); opacity: 0; }
+}
+
+.cauldron .slosh, .cauldron .spill, .cauldron .puddle { transform-box: fill-box; }
+.cauldron .slosh { transform-origin: center; }
+
+.cauldron-sputter .bubbles circle { animation: sputter 1.3s cubic-bezier(0.2, 1.6, 0.5, 1) infinite; }
+.cauldron-sputter .bubbles circle:nth-child(2) { animation-duration: 0.9s; animation-delay: 0.3s; }
+.cauldron-sputter .bubbles circle:nth-child(3) { animation-duration: 1.7s; animation-delay: 0.7s; }
+.cauldron-sputter .bubbles circle:nth-child(4) { animation-duration: 1.1s; animation-delay: 0.1s; }
+@keyframes sputter {
+  0% { transform: translate(0, 0) scale(0.3); opacity: 0; }
+  10% { opacity: 1; }
+  40% { transform: translate(-6px, -24px) scale(1.3); }
+  55% { transform: translate(5px, -28px) scale(0.8); opacity: 1; }
+  100% { transform: translate(-3px, -46px) scale(1.1); opacity: 0; }
+}
+.cauldron-sputter .slosh { animation: wobble 1.6s ease-in-out infinite; }
+@keyframes wobble {
+  0%, 100% { transform: rotate(0deg) scaleY(1); }
+  25% { transform: rotate(-3deg) scaleY(1.08); }
+  60% { transform: rotate(2.5deg) scaleY(0.94); }
+}
+
+.cauldron-spill { animation: rattle 0.3s steps(2) infinite; }
+@keyframes rattle { 0% { transform: translateX(-1.5px); } 100% { transform: translateX(1.5px); } }
+.cauldron-spill .bubbles circle { animation: boil 0.9s ease-out infinite; }
+.cauldron-spill .bubbles circle:nth-child(2) { animation-delay: 0.2s; }
+.cauldron-spill .bubbles circle:nth-child(3) { animation-delay: 0.5s; }
+.cauldron-spill .bubbles circle:nth-child(4) { animation-delay: 0.65s; }
+.cauldron-spill .bubbles circle:nth-child(5) { animation-delay: 0.35s; }
+@keyframes boil {
+  0% { transform: translate(0, 0) scale(0.4); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(8px, -54px) scale(1.5); opacity: 0; }
+}
+.cauldron-spill .slosh { animation: slosh 1.1s ease-in-out infinite; }
+@keyframes slosh { 0%, 100% { transform: rotate(-6deg) translateY(-3px); } 50% { transform: rotate(6deg) translateY(-6px); } }
+.cauldron-spill .spill { transform-origin: top; animation: ooze 2.6s ease-in infinite; }
+@keyframes ooze { 0% { transform: scaleY(0.15); } 70%, 100% { transform: scaleY(1); } }
+.cauldron-spill .puddle { transform-origin: center; animation: puddle 2.6s ease-out infinite alternate; }
+@keyframes puddle { from { transform: scaleX(0.6); } to { transform: scaleX(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cauldron.dripping .drop { animation: none; }
+  button.sparkly, button.sparkly::before, button.sparkly::after, .hints h3, .hints li, .hints li::before { animation: none; }
+  .steam path { animation: none; opacity: 0.4; }
+  .celebration .spark, .heart-smoke, .skull-smoke { animation: none; opacity: 0.8; }
+  .sparkle, .sparkle::before, .sparkle::after { animation: none; }
+  .scene .stars, .scene .fog, .scene .twinkle, .scene .ghost { animation: none; }
+  .cauldron, .cauldron .bubbles circle, .cauldron .slosh, .cauldron .spill, .cauldron .puddle { animation: none; }
+  .cauldron .bubbles circle { opacity: 0.8; }
+}
+
+.potion-name { font: 400 34px/1.1 var(--display); margin: 6px 0 4px; color: var(--pink); text-shadow: 0 0 18px rgba(255, 79, 163, 0.45); }
+.potion-line { font: 500 21px/1.35 var(--cute); margin: 0 0 8px; color: var(--muted); }
+/* Whispers from the cauldron: a wisp of green smoke, with each hint drifting in out of the blur */
+.hints {
+  position: relative; margin-top: 22px; padding: 18px 22px 16px; border-radius: 26px 26px 26px 6px;
+  background: radial-gradient(120% 140% at 0% 0%, rgba(125, 255, 107, 0.14), transparent 55%),
+    radial-gradient(120% 140% at 100% 100%, rgba(155, 92, 255, 0.24), transparent 60%), rgba(20, 10, 44, 0.6);
+  border: 1.5px solid rgba(125, 255, 107, 0.35);
+  box-shadow: 0 0 34px rgba(125, 255, 107, 0.12), inset 0 0 24px rgba(155, 92, 255, 0.15);
+}
+.hints h3 {
+  margin: 0 0 10px; font: 400 21px var(--display); text-transform: lowercase; letter-spacing: 0.01em;
+  color: var(--slime); text-shadow: 0 0 14px rgba(125, 255, 107, 0.6); animation: wisp 4s ease-in-out infinite;
+}
+@keyframes wisp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+.hints ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.hints li { position: relative; padding-left: 28px; font: 500 19px/1.4 var(--cute); animation: whisper-in 0.9s ease both; }
+.hints li::before {
+  content: "✦"; position: absolute; left: 2px; top: 0.05em; font-style: normal; color: var(--lemon);
+  text-shadow: 0 0 8px currentColor; animation: twinkle-star 2.2s ease-in-out infinite;
+}
+.hints li:nth-child(1) { animation-delay: 0.9s; }
+.hints li:nth-child(2) { animation-delay: 1.25s; } .hints li:nth-child(2)::before { color: var(--pink); animation-delay: 0.4s; }
+.hints li:nth-child(3) { animation-delay: 1.6s; } .hints li:nth-child(3)::before { color: var(--blue); animation-delay: 0.8s; }
+.hints li:nth-child(4) { animation-delay: 1.95s; } .hints li:nth-child(4)::before { color: var(--slime); animation-delay: 1.2s; }
+.hints li:nth-child(n + 5) { animation-delay: 2.3s; } .hints li:nth-child(n + 5)::before { color: var(--grape); }
+@keyframes whisper-in { from { opacity: 0; transform: translateX(-10px); filter: blur(5px); } to { opacity: 1; transform: none; filter: none; } }
+.code-big { font: 700 44px var(--mono); letter-spacing: 0.06em; }
+.tier { display: inline-flex; align-items: baseline; gap: 14px; margin: 14px 0 6px; padding: 8px 20px; border-radius: 999px; border: 2px solid currentColor; }
+.tier-name { font: 400 32px var(--display); }
+.tier-de { font: 600 18px var(--mono); opacity: 0.85; }
+.tier-easy { color: var(--easy); }
+.tier-medium { color: var(--medium); }
+.tier-hard { color: var(--hard); }
+.tier-brutal { color: var(--brutal); }
+.flavor { font: italic 21px var(--body); margin: 8px 0 16px; }
+
+.points-head { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.points-head .code-big { font-size: 34px; }
+.total { margin-left: auto; font: 400 48px var(--display); color: var(--easy); }
+.total span { font-size: 20px; color: var(--muted); }
+.total.neg, .pts.neg { color: var(--brutal); }
+.rules { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 20px; }
+.rules td { padding: 10px 4px; border-bottom: 1px solid var(--line); }
+.rule-section { margin-top: 28px; }
+.rule-section h2 { margin-bottom: 0; }
+.rule-list td { vertical-align: top; }
+.rule-list td span { display: block; font-size: 15px; }
+.rule-list .pts { white-space: nowrap; width: auto; padding-left: 16px; }
+.rule-list .example { font: 700 17px var(--mono); color: #bdf0ff; white-space: nowrap; width: 11ch; }
+.pts { text-align: right; font: 700 20px var(--mono); color: var(--easy); width: 5ch; }
+.words { margin-top: 18px; }
+.word-list { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 6px 14px; }
+.word-list li { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.word-list .pts { margin-left: auto; width: auto; }
+.word { display: inline-block; font: 700 16px var(--mono); padding: 2px 10px; border-radius: 999px; background: rgba(53, 200, 255, 0.16); color: #bdf0ff; }
+.spooky { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--slime); }
+
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 720px; margin: 0 auto; }
+.reveal-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 16px; margin-top: 22px; }
+.more { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 32px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--line); }
+.more[hidden] { display: none; }
+.compare-result > .verdict { flex-direction: row; align-items: baseline; justify-content: center; gap: 20px; margin-top: 20px; }
+.pair figure { margin: 0; }
+.pair figcaption { margin-top: 8px; font: 600 16px var(--mono); color: var(--muted); text-align: center; }
+.pair figcaption > span { display: block; font: 400 27px/1.15 var(--display); color: var(--pink); margin-top: 4px; text-shadow: 0 0 16px rgba(255, 79, 163, 0.45); }
+.pair figcaption em { display: block; max-width: 300px; margin: 4px auto 0; font: 500 16px/1.35 var(--cute); font-style: normal; color: var(--muted); }
+.verdict { display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+.judge { font: 400 50px var(--display); text-shadow: 0 0 24px currentColor; }
+.judge-spot-on { color: var(--easy); }
+.judge-close { color: var(--medium); }
+.judge-passable { color: var(--hard); }
+.judge-miss { color: var(--brutal); }
+.de-big { font: 700 28px var(--mono); }
+.feedback ul { margin: 0; padding-left: 22px; font-size: 20px; }
+.fix { font-size: 20px; margin: 4px 0 8px; }
+.fix-preview { display: flex; align-items: center; gap: 12px; }
+
+.plot-row { display: flex; gap: 14px; align-items: stretch; }
+.plane { position: relative; width: 300px; height: 300px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); flex: none; }
+.plane canvas, .plane svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.plane canvas { image-rendering: auto; filter: saturate(0.85) brightness(0.9); }
+.axis { stroke: rgba(0, 0, 0, 0.35); stroke-width: 1; }
+.axis-label { font: 700 11px var(--body); fill: rgba(0, 0, 0, 0.65); paint-order: stroke; stroke: rgba(255, 255, 255, 0.5); stroke-width: 3px; }
+.arrow { stroke: #fff; stroke-width: 3; stroke-linecap: round; filter: drop-shadow(0 0 2px #000); }
+.arrow-head { fill: #fff; }
+.dot { stroke-width: 3; }
+.dot-target { stroke: #fff; }
+.dot-actual { stroke: #111; stroke-dasharray: 3 2; }
+.lbar { position: relative; width: 22px; border-radius: 8px; background: linear-gradient(to top, #000, #fff); border: 1px solid var(--line); }
+.lmark { position: absolute; left: -7px; width: 34px; height: 12px; margin-bottom: -6px; border-radius: 6px; background: var(--dot); }
+.lmark-target { border: 3px solid #fff; }
+.larrow { position: absolute; left: 50%; width: 3px; margin-left: -1.5px; background: var(--accent); box-shadow: 0 0 2px #000; }
+.larrow::after { content: ""; position: absolute; left: -5.5px; border: 7px solid transparent; }
+.larrow-up::after { top: -8px; border-bottom-color: var(--accent); border-top-width: 0; }
+.larrow-down::after { bottom: -8px; border-top-color: var(--accent); border-bottom-width: 0; }
+.lmark-actual { border: 3px dashed #111; }
+.plot-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 14px; align-items: center; }
+.key { display: inline-block; width: 14px; height: 14px; border-radius: 50%; vertical-align: -2px; margin-right: 6px; }
+.key-target { border: 2px solid #fff; }
+.key-actual { border: 2px dashed #111; outline: 1px solid #666; }
+
+@media (max-width: 760px) {
+  .welcome-result, .more { grid-template-columns: 1fr; }
+  .topbar { flex-direction: column; align-items: flex-start; }
+  .plane { width: 260px; height: 260px; }
+}
+
+.board-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.board-head h1 { margin: 0; }
+.board { overflow-x: auto; }
+.board table { width: 100%; border-collapse: collapse; font-size: 18px; }
+.board th { text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 0 10px 10px; }
+.board td { padding: 12px 10px; border-top: 1px solid var(--line); vertical-align: top; }
+.board .rank { font: 400 26px var(--display); color: var(--lemon); width: 2ch; }
+.board .nick { font-weight: 700; text-transform: lowercase; }
+.mono { font-family: var(--mono); white-space: nowrap; }
+.best { font: 700 18px var(--mono); }
+.dot-chip { display: inline-block; width: 14px; height: 14px; border-radius: 50%; margin-right: 6px; vertical-align: -2px; border: 1px solid rgba(255, 255, 255, 0.3); }
+.guesses { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.guesses li { font: 600 14px var(--mono); padding: 3px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line); white-space: nowrap; }
+.guesses li span { margin-left: 8px; color: var(--muted); }
+.guesses li.is-best { border-color: var(--easy); }
