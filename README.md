@@ -1,24 +1,43 @@
 # Witch's Brew
 
-Offline laptop app for the Haunted Paint finale. Three screens:
+Offline laptop app for the Haunted Paint Halloween party: players type their three hex cards to brew a potion, test how close their paint mix came, and climb the leaderboard.
 
-- **Welcome**: type a code and see the target swatch plus how hard it is to mix (Easy, Medium, Hard, Brutal).
-- **Points**: every house scoring rule the code qualifies for (a port of `score_reference.py`).
-- **Compare**: type the hex read off the phone photo of a swatch. Shows ΔE2000, the judging tier, which way the color is off, a suggested paint fix, and a plot of both colors.
+## Run it
 
-## Run
+Needs [Node.js](https://nodejs.org) 18 or newer.
 
 ```sh
-npm install
-npm run dev        # local dev server
-npm run build      # builds dist/, which then needs no network
-npm run preview    # serve the built dist/
-npm test
+npm ci            # install exact dependency versions
+npm run dev       # open the printed localhost link
 ```
 
-## Data
+For the party, build once and serve the build. It runs with no internet:
 
-- `data/*words*.csv`: word lists for the Words rule (currently `words_all_regular.csv` and `words_common_leetspeak.csv`). Every matching file is loaded and merged. Each needs the columns `Word`, `Spelled in hex`, `Length` and `Spooky`. Rebuild after changing them.
-- Paint colors, tier limits, judging tiers and scoring settings are all in [src/config.ts](src/config.ts).
+```sh
+npm run build
+npm run preview   # open the printed localhost link
+```
 
-Difficulty uses Mixbox pigment mixing (`mixbox`, CC BY-NC 4.0, free for non-commercial use) and CIEDE2000 from `culori`.
+Open it through `localhost`, not by double-clicking `dist/index.html`. The browser blocks the app's scripts from a local file, and the Camera tab only works on `localhost`.
+
+```sh
+npm test          # scoring, potions and color math
+```
+
+## Tabs
+
+- **welcome**: enter the three cards (red, green, blue) and brew the potion.
+- **points guide**: every scoring rule a code qualifies for.
+- **test your brew**: type the target code and the hex read from a photo of the paint, and get a verdict.
+- **color**: one color shown large, with how close any mix of the five paints can get.
+- **camera**: read a hex straight from the laptop camera (use "set white" on the white card first).
+- **leaderboard**: best guess per player. It's saved in this browser only.
+- **rules**: what every code can be worth.
+
+## Changing things
+
+- Scoring points, judging cutoffs and paint colors: [src/config.ts](src/config.ts). `score_reference.py` is the Python version of the scoring; the tests check the two agree.
+- Word lists: `data/*words*.csv` (columns `Word`, `Spelled in hex`, `Length`, `Spooky`).
+- Potion names: [src/potion.ts](src/potion.ts).
+
+Pigment mixing uses Mixbox (`mixbox`, CC BY-NC 4.0, free for non-commercial use).
